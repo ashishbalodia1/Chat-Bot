@@ -37,6 +37,8 @@
     function initChatbot() {
         // Add chatbot to body
         const container = document.createElement('div');
+        container.style.position = 'relative';
+        container.style.zIndex = '999';
         container.innerHTML = chatbotHTML;
         document.body.appendChild(container);
 
@@ -124,10 +126,14 @@
         function getBotResponse(userMessage) {
             const message = userMessage.toLowerCase().trim();
             
-            // Check for keyword matches
+            // Check for keyword matches using word boundaries
             for (const [key, response] of Object.entries(responses)) {
-                if (key !== 'default' && message.includes(key)) {
-                    return response;
+                if (key !== 'default') {
+                    // Use regex with word boundaries for accurate matching
+                    const regex = new RegExp('\\b' + key + '\\b', 'i');
+                    if (regex.test(message)) {
+                        return response;
+                    }
                 }
             }
             
