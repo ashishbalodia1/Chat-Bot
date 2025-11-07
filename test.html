@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Test Suite</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .pass {
+            background: #1e4620;
+            border-left: 4px solid #4caf50;
+        }
+        .fail {
+            background: #5a1e1e;
+            border-left: 4px solid #f44336;
+        }
+        h1 {
+            color: #4fc3f7;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2d2d2d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>City Guardian Chatbot - Test Suite</h1>
+    <div id="test-results"></div>
+    <div id="summary" class="summary"></div>
+
+    <script src="chatbot.js"></script>
+    <script>
+        // Test suite for chatbot functionality
+        class ChatbotTester {
+            constructor() {
+                this.results = [];
+                this.chatbot = null;
+            }
+
+            // Mock the DOM elements needed for chatbot
+            setupMockDOM() {
+                const container = document.createElement('div');
+                container.id = 'chatbot-container';
+                container.innerHTML = `
+                    <div id="chatbot-button"></div>
+                    <div id="chatbot-window" class="hidden">
+                        <div id="chatbot-close"></div>
+                        <div id="chatbot-messages"></div>
+                        <input type="text" id="chatbot-input">
+                        <button id="chatbot-send"></button>
+                    </div>
+                `;
+                document.body.appendChild(container);
+            }
+
+            test(name, fn) {
+                try {
+                    fn();
+                    this.results.push({ name, passed: true });
+                    console.log(`✓ ${name}`);
+                } catch (error) {
+                    this.results.push({ name, passed: false, error: error.message });
+                    console.error(`✗ ${name}: ${error.message}`);
+                }
+            }
+
+            assert(condition, message) {
+                if (!condition) {
+                    throw new Error(message || 'Assertion failed');
+                }
+            }
+
+            assertContains(text, substring, message) {
+                if (!text.toLowerCase().includes(substring.toLowerCase())) {
+                    throw new Error(message || `Expected text to contain "${substring}"`);
+                }
+            }
+
+            runTests() {
+                console.log('Running tests...\n');
+                
+                // Setup mock DOM
+                this.setupMockDOM();
+                
+                // Initialize chatbot
+                this.chatbot = new CityGuardianChatbot();
+
+                // Test 1: Greeting recognition
+                this.test('Greeting recognition', () => {
+                    const response = this.chatbot.generateResponse('Hello');
+                    this.assertContains(response, 'City Guardian', 'Should mention City Guardian in greeting');
+                });
+
+                // Test 2: About City Guardian
+                this.test('About City Guardian query', () => {
+                    const response = this.chatbot.generateResponse('What is City Guardian?');
+                    this.assertContains(response, 'platform', 'Should explain the platform');
+                });
+
+                // Test 3: Report issue query
+                this.test('Report issue query', () => {
+                    const response = this.chatbot.generateResponse('How do I report an issue?');
+                    this.assertContains(response, 'report', 'Should provide reporting instructions');
+                });
+
+                // Test 4: Track query
+                this.test('Track report query', () => {
+                    const response = this.chatbot.generateResponse('How can I track my report?');
+                    this.assertContains(response, 'track', 'Should provide tracking information');
+                });
+
+                // Test 5: Contact information
+                this.test('Contact information query', () => {
+                    const response = this.chatbot.generateResponse('How can I contact you?');
+                    this.assertContains(response, 'contact', 'Should provide contact information');
+                });
+
+                // Test 6: Account query
+                this.test('Account management query', () => {
+                    const response = this.chatbot.generateResponse('How do I create an account?');
+                    this.assertContains(response, 'account', 'Should provide account information');
+                });
+
+                // Test 7: Features query
+                this.test('Features query', () => {
+                    const response = this.chatbot.generateResponse('What features do you have?');
+                    this.assertContains(response, 'features', 'Should list features');
+                });
+
+                // Test 8: Privacy query
+                this.test('Privacy query', () => {
+                    const response = this.chatbot.generateResponse('Is my data safe?');
+                    this.assertContains(response, 'privacy', 'Should address privacy concerns');
+                });
+
+                // Test 9: Thanks response
+                this.test('Thank you response', () => {
+                    const response = this.chatbot.generateResponse('Thank you');
+                    this.assertContains(response, 'welcome', 'Should acknowledge thanks');
+                });
+
+                // Test 10: Goodbye response
+                this.test('Goodbye response', () => {
+                    const response = this.chatbot.generateResponse('Goodbye');
+                    this.assertContains(response, 'goodbye', 'Should say goodbye');
+                });
+
+                // Test 11: Unknown query handling
+                this.test('Unknown query handling', () => {
+                    const response = this.chatbot.generateResponse('asdfghjkl random text');
+                    this.assert(response.length > 0, 'Should provide a default response');
+                });
+
+                // Test 12: Message history
+                this.test('Message history tracking', () => {
+                    const initialCount = this.chatbot.messageHistory.length;
+                    this.chatbot.addMessage('Test message', 'user');
+                    this.assert(
+                        this.chatbot.messageHistory.length === initialCount + 1,
+                        'Should track message history'
+                    );
+                });
+
+                // Test 13: Keyword matching
+                this.test('Keyword matching (case insensitive)', () => {
+                    const response1 = this.chatbot.generateResponse('WHAT IS CITY GUARDIAN?');
+                    const response2 = this.chatbot.generateResponse('what is city guardian?');
+                    this.assert(response1.length > 0 && response2.length > 0, 'Should handle case insensitive input');
+                });
+
+                this.displayResults();
+            }
+
+            displayResults() {
+                const resultsDiv = document.getElementById('test-results');
+                const summaryDiv = document.getElementById('summary');
+                
+                let html = '';
+                let passed = 0;
+                let failed = 0;
+
+                this.results.forEach(result => {
+                    if (result.passed) {
+                        html += `<div class="test-result pass">✓ ${result.name}</div>`;
+                        passed++;
+                    } else {
+                        html += `<div class="test-result fail">✗ ${result.name}<br>Error: ${result.error}</div>`;
+                        failed++;
+                    }
+                });
+
+                resultsDiv.innerHTML = html;
+                
+                const total = this.results.length;
+                const percentage = ((passed / total) * 100).toFixed(1);
+                summaryDiv.innerHTML = `
+                    <strong>Test Summary:</strong><br>
+                    Total: ${total} | Passed: ${passed} | Failed: ${failed} | Success Rate: ${percentage}%
+                `;
+
+                console.log(`\nTest Summary: ${passed}/${total} passed (${percentage}%)`);
+            }
+        }
+
+        // Run tests when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const tester = new ChatbotTester();
+            tester.runTests();
+        });
+    </script>
+</body>
+</html>
