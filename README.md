@@ -43,7 +43,7 @@ Open `chatbot.html` in your browser to see a live demo of the chatbot.
 
 #### Option 2: CDN Integration (For Production)
 
-Once deployed to a CDN or web hosting, use:
+Once you've hosted the files on a CDN, web server, or GitHub Pages:
 
 ```html
 <!-- Add to <head> -->
@@ -55,6 +55,14 @@ Once deployed to a CDN or web hosting, use:
 </div>
 <script src="https://your-cdn-url/chatbot.js"></script>
 ```
+
+**Recommended hosting options:**
+- GitHub Pages (free for static hosting)
+- Cloudflare Pages or Workers
+- AWS CloudFront or S3
+- Your own web server
+
+**Note:** Do not use raw.githubusercontent.com URLs in production as they are not designed for that purpose and may have rate limiting or availability issues.
 
 #### Option 3: Using the Embed File
 
