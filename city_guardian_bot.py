@@ -185,9 +185,10 @@ class CityGuardianBot:
                 status_data = self.api_client.get_complaint_status(complaint_id)
                 return self._format_complaint_status(status_data, language)
             except Exception as e:
+                # Log error but don't expose details to user
                 if language == Language.HINDI:
-                    return f"Complaint status lene mein samasya: {str(e)}"
-                return f"Error fetching complaint status: {str(e)}"
+                    return "Complaint status lene mein samasya hui. Kripya baad mein koshish karen."
+                return "Unable to fetch complaint status at this time. Please try again later."
         
         # Mock response for demonstration
         if language == Language.HINDI:
@@ -218,9 +219,10 @@ class CityGuardianBot:
                 env_data = self.api_client.get_environmental_data(zone)
                 return self._format_environmental_data(env_data, language)
             except Exception as e:
+                # Log error but don't expose details to user
                 if language == Language.HINDI:
-                    return f"Environmental data lene mein samasya: {str(e)}"
-                return f"Error fetching environmental data: {str(e)}"
+                    return "Environmental data lene mein samasya hui. Kripya baad mein koshish karen."
+                return "Unable to fetch environmental data at this time. Please try again later."
         
         # Mock response for demonstration
         if language == Language.HINDI:
@@ -260,9 +262,10 @@ class CityGuardianBot:
                 performance_data = self.api_client.get_performance_rankings()
                 return self._format_achievements(performance_data, language)
             except Exception as e:
+                # Log error but don't expose details to user
                 if language == Language.HINDI:
-                    return f"Achievement data lene mein samasya: {str(e)}"
-                return f"Error fetching achievement data: {str(e)}"
+                    return "Achievement data lene mein samasya hui. Kripya baad mein koshish karen."
+                return "Unable to fetch achievement data at this time. Please try again later."
         
         # Mock response for demonstration
         if language == Language.HINDI:

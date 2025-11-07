@@ -73,8 +73,10 @@ def chat():
         })
     
     except Exception as e:
+        # Log the full error internally but return sanitized message to user
+        app.logger.error(f"Error in chat endpoint: {str(e)}")
         return jsonify({
-            'error': str(e)
+            'error': 'An error occurred while processing your message. Please try again.'
         }), 500
 
 
@@ -103,8 +105,10 @@ def get_complaint_status(complaint_id):
             }), 503
     
     except Exception as e:
+        # Log the full error internally but return sanitized message to user
+        app.logger.error(f"Error fetching complaint status for {complaint_id}: {str(e)}")
         return jsonify({
-            'error': str(e)
+            'error': 'Unable to fetch complaint status. Please try again later.'
         }), 500
 
 
@@ -134,8 +138,10 @@ def get_environmental_data(zone_id):
             }), 503
     
     except Exception as e:
+        # Log the full error internally but return sanitized message to user
+        app.logger.error(f"Error fetching environmental data for zone {zone_id}: {str(e)}")
         return jsonify({
-            'error': str(e)
+            'error': 'Unable to fetch environmental data. Please try again later.'
         }), 500
 
 
@@ -160,8 +166,10 @@ def get_performance_rankings():
             }), 503
     
     except Exception as e:
+        # Log the full error internally but return sanitized message to user
+        app.logger.error(f"Error fetching performance rankings: {str(e)}")
         return jsonify({
-            'error': str(e)
+            'error': 'Unable to fetch performance rankings. Please try again later.'
         }), 500
 
 
